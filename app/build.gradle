@@ -49,7 +49,7 @@ android {
         }
     }
     repositories {
-        flatDir{
+        flatDir {
             dirs 'libs'
         }
     }
@@ -67,6 +67,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //65536
     implementation 'com.android.support:multidex:1.0.3'
-//    implementation project(':flutter')
-    implementation (name:'flutter-release-old',ext:'aar')
+    implementation project(':flutter')
+//    implementation(name: 'flutter-release', ext: 'aar')
 }

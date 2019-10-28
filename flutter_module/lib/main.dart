@@ -1,8 +1,10 @@
-import 'dart:ui';
+import 'dart:ui' as prefix0;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-void main() => runApp(_widgetForRoute(window.defaultRouteName));
+void main() => runApp(_widget(prefix0.window.defaultRouteName));
+const platform = MethodChannel('samples.demo/navigation');
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -26,44 +28,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//Widget _widgetForRoute(String route) {
-//  switch (route) {
-//    case "flutter Route1":
-//      return Scaffold(
-//        appBar: AppBar(
-//          title: Text("test native"),
-//        ),
-//        body: Center(
-//          child: Text('flutter 页面,route=$route'),
-//        ),
-//      );
-//    default:
-//      return Center(
-//        child: Text('Unknown route: $route', textDirection: TextDirection.ltr),
-//      );
-//  }
-//}
-
-
-Widget _widgetForRoute(String route) {
-  switch (route) {
-    case 'flutter Route1':
-      return MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text('Flutter页面'),
-          ),
-          body: Center(
-            child: Text('Flutter页面，route=$route'),
-          ),
-        ),
-      );
-    default:
-      return Center(
-        child: Text('Unknown route: $route', textDirection: TextDirection.ltr),
-      );
-  }
-}
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -135,7 +99,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .display1,
             ),
           ],
         ),
@@ -145,6 +112,82 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+Widget _widget(String route) {
+  switch (route) {
+    default:
+      return MaterialApp(
+        home: DefaultPage(showBack: true,),
+      );
+  }
+}
+
+class _PageA extends StatelessWidget {
+  bool showBack;
+
+  _PageA({Key key, this.showBack = false}) :super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Flutter 页面"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Flutter 页面",
+              style: TextStyle(fontSize: 30.0, color: Colors.black),
+            ),
+            RaisedButton(
+              child: Text("去原生界面"),
+              onPressed: () => platform.invokeMethod('openNativePage'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DefaultPage extends StatelessWidget {
+  bool showBack;
+
+  DefaultPage({Key key, this.showBack = false}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Default page"),
+        leading: !showBack
+            ? null
+            : IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => platform.invokeMethod('closeFlutterPage')),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'default page',
+              style: TextStyle(fontSize: 30.0, color: Colors.black),
+            ),
+            RaisedButton(
+              child: Text('去另一个Flutter界面'),
+              onPressed: () =>
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => _PageA())),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
