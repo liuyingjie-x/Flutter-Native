@@ -12,9 +12,13 @@ android {
         }
     }
     compileSdkVersion 28
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
     defaultConfig {
         applicationId "test.myhexin.lyj.com.myapplication"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -44,6 +48,11 @@ android {
             signingConfig signingConfigs.config
         }
     }
+    repositories {
+        flatDir{
+            dirs 'libs'
+        }
+    }
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -58,4 +67,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //65536
     implementation 'com.android.support:multidex:1.0.3'
+//    implementation project(':flutter')
+    implementation (name:'flutter-release-old',ext:'aar')
 }
